@@ -13,17 +13,13 @@ cc_library(
         "@platforms//os:macos": [
             "-framework AppKit",
             "-framework CoreGraphics",
+            "-lreadline",
         ],
     }),
     linkstatic = True,
     deps = [
         "@python_interpreter//:libpython",
-    ] + select({
-        "@platforms//os:linux": [],
-        "@platforms//os:macos": [
-            "@readline",
-        ],
-    }),
+    ],
 )
 
 cc_library(
