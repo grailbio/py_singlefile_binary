@@ -1,0 +1,2 @@
+# See https://github.com/grailbio/bazel-toolchain/issues/35#issuecomment-593061873
+build --incompatible_enable_cc_toolchain_resolution

@@ -1,0 +1,59 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+
+cc_library(
+    name = "headers",
+    hdrs = glob(["python/install/include/python3.7m/**"]),
+    strip_include_prefix = "python/install/include/python3.7m",
+)
+
+_common_libs = [
+    "bz2",
+    "crypto",
+    "db",
+    "ffi",
+    "lzma",
+    "sqlite3",
+    "ssl",
+    "tcl8.6",
+    "tk8.6",
+    "uuid",
+]
+
+cc_library(
+    name = "libpython",
+    srcs = [
+        "python/install/lib/libpython3.7m.a",
+    ] + select({
+        "@platforms//os:linux": [
+            "python/build/lib/lib%s.a" % lib
+            for lib in _common_libs + [
+                "readline",
+                "ncursesw",
+                "panelw",
+                "X11",
+                "Xau",
+                "xcb",
+            ]
+        ],
+        "@platforms//os:macos": [
+            "python/build/lib/lib%s.a" % lib
+            for lib in _common_libs + [
+                "intl",
+            ]
+        ],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [":headers"],
+)
+
+pkg_zip(
+    name = "stdlib.zip",
+    srcs = glob(
+        ["python/install/lib/python3.7/**"],
+        exclude = ["python/install/lib/python3.7/config-*/**"],
+    ),
+    package_file_name = "stdlib.zip",
+    strip_prefix = "external/%s/python/install" % repository_name()[1:],
+    visibility = ["//visibility:public"],
+)

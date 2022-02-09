@@ -1,0 +1,30 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+REPO_NAME = repository_name()[1:]
+
+# TODO: Consider defining a :lib target, too, if we need it in the future.
+# BUCK syntax is fairly close to Starlark so it may be possible to translate lib/BUCK.
+
+cc_binary(
+    name = "zstd",
+    srcs = glob(
+        [
+            "programs/*.c",
+            "programs/*.h",
+            "lib/**/*.c",
+            "lib/**/*.h",
+        ],
+        exclude = [
+            "datagen.c",
+            "datagen.h",
+            "platform.h",
+            "util.h",
+        ],
+    ),
+    copts = [
+        "-Iexternal/%s/lib" % REPO_NAME,
+        "-Iexternal/%s/lib/common" % REPO_NAME,
+        "-Iexternal/%s/lib/dictBuilder" % REPO_NAME,
+    ],
+    visibility = ["//visibility:public"],
+)
