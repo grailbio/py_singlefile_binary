@@ -40,23 +40,6 @@ cc_binary(
     ],
 )
 
-# Python interpreter binary that expects to have a .zip file concatenated onto itself before execution.
-# The .zip file should contain the standard library in lib/python* plus a top-level __main__.py
-# defining a self-executing Python .zip (see PEP 441).
-cc_binary(
-    name = "python_selfexe_zip_base",
-    srcs = ["python.c"],
-    copts = [
-        "-DGRAIL_PYTHON_EXEC_SELF_ZIP",
-        "-DPy_BUILD_CORE",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "libpython",
-        "self_exe_path",
-    ],
-)
-
 cat_executable(
     name = "python_with_stdlib",
     srcs = [
